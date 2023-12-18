@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { ObjectId, TemplateObject, toObjectId } from "core";
+import { ObjectId, TemplateObject } from "core";
 
 export default abstract class TemplateSchema<T extends TemplateObject> {
     protected _model: mongoose.Model<mongoose.Model<T>>;
@@ -13,11 +13,11 @@ export default abstract class TemplateSchema<T extends TemplateObject> {
         return new this._ctor((await this._model.create(obj)).toObject());
     }
 
-    public async get(id: Array<ObjectId | string>, projection?: string, populate?: string): Promise<Array<T>>;
-    public async get(id: ObjectId | string, projection?: string, populate?: string): Promise<T>;
-    public async get(id: Array<ObjectId | string> | ObjectId | string, projection?: string, populate?: string): Promise<Array<T> | T | never> {
+    public async get(id: Array<ObjectId>, projection?: string, populate?: string): Promise<Array<T>>;
+    public async get(id: ObjectId, projection?: string, populate?: string): Promise<T>;
+    public async get(id: Array<ObjectId> | ObjectId, projection?: string, populate?: string): Promise<Array<T> | T | never> {
         if (Array.isArray(id)) {
-            const query = this._model.find({ _id: { $in: id.map((id) => toObjectId(id)) } }, projection);
+            const query = this._model.find({ _id: { $in: id } }, projection);
 
             if (populate)
                 query.populate(populate);
@@ -26,7 +26,7 @@ export default abstract class TemplateSchema<T extends TemplateObject> {
                 throw new Error("TemplateSchema.get(Array) Not found");
             return result.map(obj => new this._ctor(obj.toObject()));
         }  else {
-            const query = this._model.findById(toObjectId(id), projection);
+            const query = this._model.findById(id, projection);
 
             if (populate)
                 query.populate(populate);
@@ -37,15 +37,15 @@ export default abstract class TemplateSchema<T extends TemplateObject> {
         }
     }
 
-    public async exist(id: Array<ObjectId | string>): Promise<boolean>;
-    public async exist(id: ObjectId | string): Promise<boolean>;
-    public async exist(id: Array<ObjectId | string> | ObjectId | string): Promise<boolean> {
+    public async exist(id: Array<ObjectId>): Promise<boolean>;
+    public async exist(id: ObjectId): Promise<boolean>;
+    public async exist(id: Array<ObjectId> | ObjectId): Promise<boolean> {
         if (Array.isArray(id)) {
-            const result = await this._model.countDocuments({ _id: { $in: id.map((id) => toObjectId(id)) } });
+            const result = await this._model.countDocuments({ _id: { $in: id } });
 
             return result === id.length;
         }  else {
-            const result = await this._model.exists({ _id: toObjectId(id) });
+            const result = await this._model.exists({ _id: id });
 
             return !!result;
         }
@@ -56,25 +56,25 @@ export default abstract class TemplateSchema<T extends TemplateObject> {
             throw new Error("TemplateSchema.update(obj) Invalid ID");
         return this.updateById(obj._id, obj);
     }
-    public async updateById(id: ObjectId | string, obj: Omit<T, keyof TemplateObject>, fields = ""): Promise<T | never> {
-        const result = await this._model.findByIdAndUpdate(toObjectId(id), this._parseFieldsSelector(fields, obj), { new: true });
+    public async updateById(id: ObjectId, obj: Omit<T, keyof TemplateObject>, fields = ""): Promise<T | never> {
+        const result = await this._model.findByIdAndUpdate(id, this._parseFieldsSelector(fields, obj), { new: true });
 
         if (!result)
             throw new Error("TemplateSchema.updateById(id, obj) Not found");
         return new this._ctor(result.toObject());
     }
 
-    public async delete(id: Array<ObjectId | string> | ObjectId | string): Promise<void | never> {
+    public async delete(id: Array<ObjectId> | ObjectId): Promise<void | never> {
         if (Array.isArray(id)) {
-            const result = await this._model.deleteMany({ _id: { $in: id.map((id) => toObjectId(id)) } });
+            const result = await this._model.deleteMany({ _id: { $in: id } });
 
             if (result.deletedCount !== id.length)
                 throw new Error("TemplateSchema.delete(Array) Not found");
         } else {
-            const result = await this._model.deleteOne({ _id: toObjectId(id) });
+            const result = await this._model.deleteOne({ _id: id });
 
             if (result.deletedCount !== 1)
-                throw new Error("TemplateSchema.delete(ObjectId | string) Not found");
+                throw new Error("TemplateSchema.delete(ObjectId) Not found");
         }
     }
 

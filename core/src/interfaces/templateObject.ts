@@ -2,12 +2,11 @@ import { isObjectId, NonFunctionProperties, ObjectId, toObjectId } from "../util
 
 export interface TemplateObjectRaw {
     _id?: ObjectId;
-    id?: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export type NonTemplateObjectFunctions<T extends TemplateObject> = Omit<NonFunctionProperties<T>, "id" | "createdAt" | "updatedAt">;
+export type NonTemplateObjectFunctions<T extends TemplateObject> = Omit<NonFunctionProperties<T>, "createdAt" | "updatedAt">;
 
 export default abstract class TemplateObject implements TemplateObjectRaw {
     public _id?: ObjectId;
@@ -18,19 +17,10 @@ export default abstract class TemplateObject implements TemplateObjectRaw {
     constructor(obj: NonFunctionProperties<TemplateObjectRaw>) {
         if (obj._id)
             this._id = toObjectId(obj._id);
-        else if (obj.id)
-            this._id = toObjectId(obj.id);
         this._createdAt = obj.createdAt;
         this._updatedAt = obj.updatedAt;
 
         this._objectValidation();
-    }
-
-    public get id(): string | undefined {
-        return this._id?.toString();
-    }
-    public set id(id: string) {
-        this._id = toObjectId(id);
     }
 
     public get createdAt(): Date | undefined {
