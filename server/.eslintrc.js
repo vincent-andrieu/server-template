@@ -24,7 +24,7 @@ module.exports = {
         "@typescript-eslint/no-empty-function": "off",
         'indent': ['error', 4],
         'linebreak-style': ['error', 'unix'],
-        // 'quotes': ['error', 'double'],
+        'quotes': ['error', 'double'],
         'semi': ['error', 'always'],
         'curly': ['error', 'multi'],
         'comma-dangle': ['error', 'never'],
