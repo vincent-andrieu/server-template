@@ -7,6 +7,7 @@ export default class User extends TemplateObject {
     public avatar?: string;
     public auth?: {
         sources: {
+            google?: Date;
             discord?: Date;
         };
     };
@@ -22,6 +23,7 @@ export default class User extends TemplateObject {
         if (obj.auth)
             this.auth = {
                 sources: {
+                    google: obj.auth.sources.google,
                     discord: obj.auth.sources.discord
                 }
             };
@@ -38,8 +40,13 @@ export default class User extends TemplateObject {
             throw "Invalid avatar";
 
         // Auth
-        if (this.auth)
-            if (this.auth.sources.discord && (!(this.auth.sources.discord instanceof Date) || this.auth.sources.discord.getTime() > Date.now()))
+        if (this.auth) {
+            const now = Date.now();
+
+            if (this.auth.sources.google && (!(this.auth.sources.google instanceof Date) || this.auth.sources.google.getTime() > now))
+                throw new Error("Invalid google authentification");
+            if (this.auth.sources.discord && (!(this.auth.sources.discord instanceof Date) || this.auth.sources.discord.getTime() > now))
                 throw new Error("Invalid discord authentification");
+        }
     }
 }

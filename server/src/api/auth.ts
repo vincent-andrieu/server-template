@@ -23,6 +23,7 @@ export default class AuthRoutes extends TemplateRoutes {
 
         routeWhitelister("/auth/login/failure");
         routeWhitelister("/auth/register/failure");
+        routeWhitelister("/auth/google");
         routeWhitelister("/auth/discord");
     }
 
@@ -43,9 +44,15 @@ export default class AuthRoutes extends TemplateRoutes {
             })
         );
 
+        // Google
+        this._route("get", "/auth/google/login", passport.authenticate("google-login"));
+        this._route("get", "/auth/google/login/callback", passport.authenticate("google-login", this._defaultLoginAuthenticateOptions));
+        this._route("get", "/auth/google/register", passport.authenticate("google-register"));
+        this._route("get", "/auth/google/register/callback", passport.authenticate("google-register", this._defaultRegisterAuthenticateOptions));
+
+        // Discord
         this._route("get", "/auth/discord/login", passport.authenticate("discord-login"));
         this._route("get", "/auth/discord/login/callback", passport.authenticate("discord-login", this._defaultLoginAuthenticateOptions));
-
         this._route("get", "/auth/discord/register", passport.authenticate("discord-register"));
         this._route("get", "/auth/discord/register/callback", passport.authenticate("discord-register", this._defaultRegisterAuthenticateOptions));
     }
