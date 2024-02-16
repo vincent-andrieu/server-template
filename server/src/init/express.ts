@@ -7,6 +7,7 @@ import { env } from "process";
 
 import { User as MyUser } from "core";
 import "../passport/discordPassport";
+import "../passport/googlePassport";
 import "../passport/setupPassport";
 import { RedisClient } from "./redis";
 
