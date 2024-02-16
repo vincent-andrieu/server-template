@@ -1,16 +1,18 @@
-import 'dotenv/config';
+import "dotenv/config";
 import "module-alias/register.js";
 
 import HealthRoutes from "@api/health";
-import initDatabase from "./init/database";
 import initExpress from "./init/express";
+import initMongo from "./init/mongo";
+import initRedis from "./init/redis";
 import AuthentificationMiddleware from "./middlewares/authentification";
 import { errorLoggerMiddleware, loggerMiddleware } from "./middlewares/logger";
 
 async function main() {
     console.log("Server starting...");
-    initDatabase();
-    const app = await initExpress();
+    initMongo();
+    const redisClient = await initRedis();
+    const app = await initExpress(redisClient);
     const authentificationMiddleware = new AuthentificationMiddleware();
 
     // Middlewares
