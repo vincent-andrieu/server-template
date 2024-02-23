@@ -22,7 +22,9 @@ module.exports = {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         "@typescript-eslint/no-empty-function": "off",
-        'indent': ['error', 4],
+        'indent': ['error', 4, {
+            'SwitchCase': 1
+        }],
         'linebreak-style': ['error', 'unix'],
         'quotes': ['error', 'double'],
         'semi': ['error', 'always'],
@@ -65,6 +67,12 @@ module.exports = {
                 'selector': 'classProperty',
                 'modifiers': ['static'],
                 'format': ['camelCase', 'PascalCase']
+            },
+            {
+                'selector': 'classProperty',
+                'modifiers': ['static', 'private'],
+                'format': ['camelCase'],
+                'leadingUnderscore': 'require'
             },
             {
                 'selector': 'memberLike',

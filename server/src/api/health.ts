@@ -10,7 +10,7 @@ export default class HealthRoutes extends TemplateRoutes {
 
         this._init();
 
-        // / is already whitelisted by default
+        // '/' is already whitelisted by default
         routeWhitelister("/health");
     }
 

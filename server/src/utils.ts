@@ -1,0 +1,1 @@
+export type ObjectConstructor<T> = { new(model: T): T };

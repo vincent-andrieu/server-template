@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+import { mongooseDeleteEvent, mongoosePostSaveEvent, mongoosePostUpdateEvent } from "@services/events/mongoEvents";
 import { User } from "core";
 
 const userSchema = new mongoose.Schema<User>({
@@ -13,8 +14,13 @@ const userSchema = new mongoose.Schema<User>({
     }
 }, {
     toObject: { virtuals: true },
-    toJSON: { virtuals: true },
     timestamps: true
 });
+
+userSchema.post("save", (newDocument, next) => mongoosePostSaveEvent(User, newDocument, next));
+userSchema.post("findOneAndUpdate", function (newDocument, next) {
+    mongoosePostUpdateEvent.bind(this)(User, newDocument, next);
+});
+userSchema.post("deleteOne", mongooseDeleteEvent);
 
 export default userSchema;

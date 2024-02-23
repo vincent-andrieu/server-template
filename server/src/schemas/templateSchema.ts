@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
 
-import { ObjectId, TemplateObject } from "core";
+import { NonTemplateObjectFunctions, ObjectId, TemplateObject } from "core";
+import { ObjectConstructor } from "utils";
 
 export default abstract class TemplateSchema<T extends TemplateObject> {
     protected _model: mongoose.Model<mongoose.Model<T>>;
 
-    constructor(protected _ctor: { new(model: T): T }, collectionName: string, schema: mongoose.Schema) {
+    constructor(protected _ctor: ObjectConstructor<T>, collectionName: string, schema: mongoose.Schema) {
         this._model = mongoose.model<mongoose.Model<T>>(collectionName, schema);
     }
 
-    public async add(obj: T): Promise<T> {
+    public async add(obj: NonTemplateObjectFunctions<T>): Promise<T> {
         return new this._ctor((await this._model.create(obj)).toObject());
     }
 

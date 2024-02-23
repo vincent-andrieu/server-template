@@ -4,7 +4,7 @@
     "main": "main.js",
     "scripts": {
         "start": "tsc && node build/main.js",
-        "dev": "nodemon --watch src -e ts --exec npm run start",
+        "dev": "nodemon -L --watch src -e ts --exec npm run start",
         "build": "tsc"
     },
     "repository": {
@@ -45,12 +45,14 @@
         "passport-discord": "^0.1.4",
         "passport-google-oauth20": "^2.0.0",
         "passport-oauth2": "^1.7.0",
-        "redis": "^4.6.13"
+        "redis": "^4.6.13",
+        "rxjs": "^7.8.1"
     },
     "_moduleAliases": {
         "@api": "build/api",
         "@middlewares": "build/middlewares",
         "@schemas": "build/schemas",
-        "@models": "build/models"
+        "@models": "build/models",
+        "@services": "build/services"
     }
 }
