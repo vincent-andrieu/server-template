@@ -29,14 +29,14 @@ export default class AuthRoutes extends TemplateRoutes {
 
     private _init() {
 
-        this._route("get", "/auth/login/failure", (req: Request, res: Response) => {
+        this._route("get", "/auth/login/failure", undefined, (req: Request, res: Response) => {
             res.redirect(this._clientUrl + "/auth/login/failure?failure=" + (req.session as unknown as { messages: Array<string> }).messages[0]);
         });
-        this._route("get", "/auth/register/failure", (req: Request, res: Response) => {
+        this._route("get", "/auth/register/failure", undefined, (req: Request, res: Response) => {
             res.redirect(this._clientUrl + "/auth/register/failure?failure=" + (req.session as unknown as { messages: Array<string> }).messages[0]);
         });
 
-        this._route("post", "/auth/logout", (req, res, next) =>
+        this._route("post", "/auth/logout", undefined, (req, res, next) =>
             req.logout((error) => {
                 if (error)
                     return next(error);
@@ -45,15 +45,15 @@ export default class AuthRoutes extends TemplateRoutes {
         );
 
         // Google
-        this._route("get", "/auth/google/login", passport.authenticate("google-login"));
-        this._route("get", "/auth/google/login/callback", passport.authenticate("google-login", this._defaultLoginAuthenticateOptions));
-        this._route("get", "/auth/google/register", passport.authenticate("google-register"));
-        this._route("get", "/auth/google/register/callback", passport.authenticate("google-register", this._defaultRegisterAuthenticateOptions));
+        this._route("get", "/auth/google/login", undefined, passport.authenticate("google-login"));
+        this._route("get", "/auth/google/login/callback", undefined, passport.authenticate("google-login", this._defaultLoginAuthenticateOptions));
+        this._route("get", "/auth/google/register", undefined, passport.authenticate("google-register"));
+        this._route("get", "/auth/google/register/callback", undefined, passport.authenticate("google-register", this._defaultRegisterAuthenticateOptions));
 
         // Discord
-        this._route("get", "/auth/discord/login", passport.authenticate("discord-login"));
-        this._route("get", "/auth/discord/login/callback", passport.authenticate("discord-login", this._defaultLoginAuthenticateOptions));
-        this._route("get", "/auth/discord/register", passport.authenticate("discord-register"));
-        this._route("get", "/auth/discord/register/callback", passport.authenticate("discord-register", this._defaultRegisterAuthenticateOptions));
+        this._route("get", "/auth/discord/login", undefined, passport.authenticate("discord-login"));
+        this._route("get", "/auth/discord/login/callback", undefined, passport.authenticate("discord-login", this._defaultLoginAuthenticateOptions));
+        this._route("get", "/auth/discord/register", undefined, passport.authenticate("discord-register"));
+        this._route("get", "/auth/discord/register/callback", undefined, passport.authenticate("discord-register", this._defaultRegisterAuthenticateOptions));
     }
 }

@@ -1,1 +1,3 @@
-export type ObjectConstructor<T> = { new(model: T): T };
+import { NonTemplateObjectFunctions, TemplateObject } from "core";
+
+export type ObjectConstructor<T extends TemplateObject> = { new(model: NonTemplateObjectFunctions<T>): T };

@@ -1,3 +1,5 @@
+import { checkUserPermissions } from "@services/permissions/permissions";
+import { Permissions } from "core";
 import { Express, NextFunction, Request, RequestHandler, Response } from "express";
 import { RouteParameters } from "express-serve-static-core";
 import mongoose from "mongoose";
@@ -23,15 +25,19 @@ export default class TemplateRoutes {
         );
     }
 
-    protected _route<ReqBody = unknown, ResBody = unknown, P = RouteParameters<string>>(method: "get" | "post" | "put" | "delete", route: string, ...handlers: Array<RequestHandler<P, ResBody, ReqBody>>) {
+    protected _route<ReqBody = unknown, ResBody = unknown, P = RouteParameters<string>>(method: "get" | "post" | "put" | "delete", route: string, permissions: Array<Permissions> | undefined, ...handlers: Array<RequestHandler<P, ResBody, ReqBody>>) {
         return this._app[method](route, handlers
             .map((handler) => (req: Request<P, ResBody, ReqBody>, res: Response<ResBody>, next: NextFunction) =>
-                this._wrapper<P, ResBody, ReqBody>(req, res, next, handler)
+                this._wrapper<P, ResBody, ReqBody>(permissions, req, res, next, handler)
             )
         );
     }
 
-    private async _wrapper<P, ResBody, ReqBody>(request: Request<P, ResBody, ReqBody>, response: Response<ResBody>, next: NextFunction, handler: RequestHandler<P, ResBody, ReqBody>): Promise<void> {
+    private async _wrapper<P, ResBody, ReqBody>(permissions: Array<Permissions> | undefined, request: Request<P, ResBody, ReqBody>, response: Response<ResBody>, next: NextFunction, handler: RequestHandler<P, ResBody, ReqBody>): Promise<void> {
+        if (permissions !== undefined && (!request.user || !checkUserPermissions(request.user, permissions))) {
+            response.sendStatus(403);
+            return;
+        }
         if (mongoose.connection.readyState !== mongoose.ConnectionStates.connected) {
             response.sendStatus(503);
             console.log("Database not connected:", mongoose.connection.readyState);

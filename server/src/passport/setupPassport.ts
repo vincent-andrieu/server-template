@@ -9,7 +9,7 @@ passport.serializeUser<ObjectId>((user: Express.User, done) => {
 
 passport.deserializeUser<ObjectId>(async (userId, done) => {
     try {
-        const user = await new UserSchema().get(userId);
+        const user = await new UserSchema().get(userId, undefined, "auth.roles");
 
         done(null, user);
     } catch(error) {

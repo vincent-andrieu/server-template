@@ -15,11 +15,11 @@ export default class HealthRoutes extends TemplateRoutes {
     }
 
     private _init() {
-        this._route<never, string>("get", "/", (_, res) => {
+        this._route<void, string>("get", "/", undefined, (_, res) => {
             res.status(200).send("OK");
         });
 
-        this._route<never, never>("get", "/health", (_, res) => {
+        this._route<void, void>("get", "/health", undefined, (_, res) => {
             res.sendStatus(200);
         });
     }

@@ -22,7 +22,8 @@ async function loginAuthentification(_accessToken: string, _refreshToken: string
         if (!user.auth?.sources.discord)
             userSchema.updateById(user._id, {
                 auth: {
-                    ...user.auth,
+                    permissions: [],
+                    roles: [],
                     sources: {
                         ...user.auth?.sources,
                         discord: new Date()
@@ -48,6 +49,8 @@ async function registerAuthentification(_accessToken: string, _refreshToken: str
             email: profile.email,
             avatar: profile.id && profile.avatar ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}` : undefined,
             auth: {
+                permissions: [],
+                roles: [],
                 sources: {
                     discord: new Date()
                 }

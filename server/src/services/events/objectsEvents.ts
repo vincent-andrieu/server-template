@@ -1,9 +1,9 @@
-import { User } from "core";
+import { Role, User } from "core";
 import { Subject } from "rxjs";
 
-export type ObjectsCollection = "users";
+export type ObjectsCollection = "users" | "roles";
 type EventAction = "create" | "update" | "delete";
-export type EventObjectType = User;
+export type EventObjectType = User | Role;
 
 export default class ObjectsEvents {
     private static _listeners: Record<string, Record<ObjectsCollection, {
@@ -80,7 +80,6 @@ export default class ObjectsEvents {
             Object.keys(this._listeners[id]?.[collection] || {}).forEach((collectionAction) =>
                 this.off(id, collection, collectionAction as EventAction)
             );
-            // @ts-expect-error ObjectsCollection can be unset
             delete this._listeners[id]?.[collection];
         } else if (!field && action && collection)
             switch (action) {

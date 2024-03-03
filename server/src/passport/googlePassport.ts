@@ -20,7 +20,8 @@ async function loginAuthentification(_accessToken: string, _refreshToken: string
         if (!user.auth?.sources.google)
             userSchema.updateById(user._id, {
                 auth: {
-                    ...user.auth,
+                    permissions: [],
+                    roles: [],
                     sources: {
                         ...user.auth?.sources,
                         google: new Date()
@@ -46,6 +47,8 @@ async function registerAuthentification(_accessToken: string, _refreshToken: str
             email: profile._json.email,
             avatar: profile._json.picture,
             auth: {
+                permissions: [],
+                roles: [],
                 sources: {
                     google: new Date()
                 }

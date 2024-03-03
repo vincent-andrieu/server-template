@@ -1,15 +1,18 @@
 import mongoose from "mongoose";
 
 import { mongooseDeleteEvent, mongoosePostSaveEvent, mongoosePostUpdateEvent } from "@services/events/mongoEvents";
-import { User } from "core";
+import { PERMISSIONS, User } from "core";
 
 const userSchema = new mongoose.Schema<User>({
     username: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     avatar: { type: String },
     auth: {
+        permissions: { type: [String], enum: PERMISSIONS },
+        roles: { type: [mongoose.Schema.Types.ObjectId], ref: "roles" },
         sources: {
-            discord: { type: Date, select: false }
+            google: { type: Date },
+            discord: { type: Date }
         }
     }
 }, {

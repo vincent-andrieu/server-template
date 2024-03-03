@@ -1,19 +1,17 @@
+import Role from './src/interfaces/role';
 import TemplateObject, { NonTemplateObjectFunctions } from './src/interfaces/templateObject';
 import User from './src/interfaces/user';
+import { PERMISSIONS, Permissions } from "./src/permissions";
 import { ObjectId, isObjectId, toObjectId } from './src/utils';
 
 export {
-    // Interfaces
-    TemplateObject,
-    User,
-
-    // Utils
-    isObjectId,
+    PERMISSIONS, Role, TemplateObject,
+    User, isObjectId,
     toObjectId
 };
 
 export type {
-    // Utils
     NonTemplateObjectFunctions,
-    ObjectId
+    ObjectId,
+    Permissions
 };
