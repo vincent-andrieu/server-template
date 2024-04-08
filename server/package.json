@@ -5,7 +5,9 @@
     "scripts": {
         "start": "tsc && node build/main.js",
         "dev": "nodemon -L --watch src -e ts --exec npm run start",
-        "build": "tsc"
+        "build": "tsc",
+        "lint": "eslint ./src --max-warnings=0 && tsc --noEmit",
+        "lint:fix": "eslint ./src --max-warnings=0 --fix && tsc --noEmit"
     },
     "repository": {
         "type": "git",

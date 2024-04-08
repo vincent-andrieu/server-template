@@ -22,8 +22,9 @@ declare global {
 export default function initExpress(redisClient?: RedisClient): Promise<Express> {
     const PORT = env.PORT ? Number(env.PORT) : undefined;
 
-    if (!PORT)
+    if (!PORT) {
         throw new Error("PORT environment variable not found");
+    }
     return new Promise((resolve) => {
         const app = express();
 
@@ -31,22 +32,27 @@ export default function initExpress(redisClient?: RedisClient): Promise<Express>
 
         const passportSessionSecret = env.PASSPORT_SESSION_SECRET;
 
-        if (!passportSessionSecret)
+        if (!passportSessionSecret) {
             throw new Error("PASSPORT_SESSION_SECRET environment variable not found");
-        app.use(session({
-            store: getSessionStore(redisClient),
-            secret: passportSessionSecret,
-            resave: false,
-            saveUninitialized: false,
-            cookie: { secure: false, httpOnly: true }
-        }));
+        }
+        app.use(
+            session({
+                store: getSessionStore(redisClient),
+                secret: passportSessionSecret,
+                resave: false,
+                saveUninitialized: false,
+                cookie: { secure: false, httpOnly: true }
+            })
+        );
         app.use(passport.initialize());
         app.use(passport.session());
 
-        app.use(cors({
-            origin: env.CLIENT_URL,
-            credentials: true
-        }));
+        app.use(
+            cors({
+                origin: env.CLIENT_URL,
+                credentials: true
+            })
+        );
 
         app.listen(PORT, () => {
             console.info(`App listening on port ${PORT} !`);
@@ -56,7 +62,8 @@ export default function initExpress(redisClient?: RedisClient): Promise<Express>
 }
 
 function getSessionStore(redisClient?: RedisClient): Store | undefined {
-    if (redisClient)
+    if (redisClient) {
         return new RedisStore({ client: redisClient });
+    }
     return undefined;
 }

@@ -6,7 +6,11 @@ import { ObjectConstructor } from "utils";
 export default abstract class TemplateSchema<T extends TemplateObject> {
     protected _model: mongoose.Model<mongoose.Model<T>>;
 
-    constructor(protected _ctor: ObjectConstructor<T>, collectionName: string, schema: mongoose.Schema) {
+    constructor(
+        protected _ctor: ObjectConstructor<T>,
+        collectionName: string,
+        schema: mongoose.Schema
+    ) {
         this._model = mongoose.model<mongoose.Model<T>>(collectionName, schema);
     }
 
@@ -16,24 +20,32 @@ export default abstract class TemplateSchema<T extends TemplateObject> {
 
     public async get(id: Array<ObjectId>, projection?: string, populate?: string): Promise<Array<T>>;
     public async get(id: ObjectId, projection?: string, populate?: string): Promise<T>;
-    public async get(id: Array<ObjectId> | ObjectId, projection?: string, populate?: string): Promise<Array<T> | T | never> {
+    public async get(
+        id: Array<ObjectId> | ObjectId,
+        projection?: string,
+        populate?: string
+    ): Promise<Array<T> | T | never> {
         if (Array.isArray(id)) {
             const query = this._model.find({ _id: { $in: id } }, projection);
 
-            if (populate)
+            if (populate) {
                 query.populate(populate);
+            }
             const result = await query;
-            if (result.length !== id.length)
+            if (result.length !== id.length) {
                 throw new Error("TemplateSchema.get(Array) Not found");
-            return result.map(obj => new this._ctor(obj.toObject()));
-        }  else {
+            }
+            return result.map((obj) => new this._ctor(obj.toObject()));
+        } else {
             const query = this._model.findById(id, projection);
 
-            if (populate)
+            if (populate) {
                 query.populate(populate);
+            }
             const result = await query;
-            if (!result)
+            if (!result) {
                 throw new Error("TemplateSchema.get(ObjectId) Not found");
+            }
             return new this._ctor(result.toObject());
         }
     }
@@ -45,7 +57,7 @@ export default abstract class TemplateSchema<T extends TemplateObject> {
             const result = await this._model.countDocuments({ _id: { $in: id } });
 
             return result === id.length;
-        }  else {
+        } else {
             const result = await this._model.exists({ _id: id });
 
             return !!result;
@@ -53,15 +65,17 @@ export default abstract class TemplateSchema<T extends TemplateObject> {
     }
 
     public async update(obj: T) {
-        if (!obj._id)
+        if (!obj._id) {
             throw new Error("TemplateSchema.update(obj) Invalid ID");
+        }
         return this.updateById(obj._id, obj);
     }
     public async updateById(id: ObjectId, obj: Omit<T, keyof TemplateObject>, fields = ""): Promise<T | never> {
         const result = await this._model.findByIdAndUpdate(id, this._parseFieldsSelector(fields, obj), { new: true });
 
-        if (!result)
+        if (!result) {
             throw new Error("TemplateSchema.updateById(id, obj) Not found");
+        }
         return new this._ctor(result.toObject());
     }
 
@@ -69,44 +83,56 @@ export default abstract class TemplateSchema<T extends TemplateObject> {
         if (Array.isArray(id)) {
             const result = await this._model.deleteMany({ _id: { $in: id } });
 
-            if (result.deletedCount !== id.length)
+            if (result.deletedCount !== id.length) {
                 throw new Error("TemplateSchema.delete(Array) Not found");
+            }
         } else {
             const result = await this._model.deleteOne({ _id: id });
 
-            if (result.deletedCount !== 1)
+            if (result.deletedCount !== 1) {
                 throw new Error("TemplateSchema.delete(ObjectId) Not found");
+            }
         }
     }
 
     protected _parseFieldsSelector(fields: string, obj: Record<string, unknown>): Record<string, unknown> {
-        if (fields.length === 0)
+        if (fields.length === 0) {
             return obj;
+        }
         let result = {};
 
-        for (const field of fields.split(" "))
+        for (const field of fields.split(" ")) {
             result = {
                 ...result,
                 ...this._parseConcatenateField(field, obj)
             };
+        }
 
         return result;
     }
 
-    private _parseConcatenateField<Target extends Record<string, unknown>, Source extends Record<string, unknown>>(field: string, obj: Source): Target {
+    private _parseConcatenateField<Target extends Record<string, unknown>, Source extends Record<string, unknown>>(
+        field: string,
+        obj: Source
+    ): Target {
         const result = {} as Target;
 
         if (field.includes(".")) {
             const fields = field.split(".");
             const parent = fields.shift();
 
-            if (!parent || !obj[parent])
+            if (!parent || !obj[parent]) {
                 throw new Error("TemplateSchema._parseConcatenateField Invalid field");
+            }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (result as any)[parent] = this._parseConcatenateField(fields.join("."), obj[parent] as Record<string, unknown>);
-        } else
+            (result as any)[parent] = this._parseConcatenateField(
+                fields.join("."),
+                obj[parent] as Record<string, unknown>
+            );
+        } else {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (result as any)[field] = obj[field];
+        }
 
         return result;
     }

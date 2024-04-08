@@ -4,7 +4,6 @@ import { RouteWhitelister } from "../middlewares/authentification";
 import TemplateRoutes from "./templateRoutes";
 
 export default class HealthRoutes extends TemplateRoutes {
-
     constructor(app: Express, routeWhitelister: RouteWhitelister) {
         super(app);
 

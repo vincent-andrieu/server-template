@@ -12,7 +12,7 @@ passport.deserializeUser<ObjectId>(async (userId, done) => {
         const user = await new UserSchema().get(userId, undefined, "auth.roles");
 
         done(null, user);
-    } catch(error) {
+    } catch (error) {
         done(error);
     }
 });

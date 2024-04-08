@@ -14,8 +14,9 @@ export default class AuthentificationMiddleware {
     }> = [];
 
     public whitelistRoute: RouteWhitelister = (route: string, methods?: Array<RouteMethod>) => {
-        if (!route.startsWith("/"))
+        if (!route.startsWith("/")) {
             route = "/" + route;
+        }
         this._whitelistRoutes.push({
             route,
             methods
@@ -23,26 +24,28 @@ export default class AuthentificationMiddleware {
     };
 
     public handler(request: Request, response: Response, next: NextFunction) {
-        if (this._isWhitelisted(request))
+        if (this._isWhitelisted(request)) {
             return next();
+        }
 
         this._verification(request, response, next);
     }
 
     private _verification(request: Request, response: Response, next: NextFunction) {
-        if (request.isAuthenticated())
+        if (request.isAuthenticated()) {
             return next();
+        }
         response.sendStatus(401);
     }
 
     private _isWhitelisted(request: Request): boolean {
-        if (request.originalUrl === "/")
+        if (request.originalUrl === "/") {
             return true;
+        }
         return this._whitelistRoutes.some(
             ({ route, methods }) =>
                 (!methods || methods?.includes(request.method.toUpperCase() as RouteMethod)) &&
                 request.originalUrl.startsWith(route)
         );
     }
-
 }
