@@ -28,7 +28,7 @@ module.exports = {
             'SwitchCase': 1
         }],
         'linebreak-style': ['error', 'unix'],
-        'quotes': ['error', 'double'],
+        // 'quotes': ['error', 'double'],
         'semi': ['error', 'always'],
         'curly': ['error', 'all'],
         'nonblock-statement-body-position': ['error', 'below'],

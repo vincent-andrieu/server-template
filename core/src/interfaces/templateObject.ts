@@ -6,7 +6,10 @@ export interface TemplateObjectRaw {
     updatedAt?: Date;
 }
 
-export type NonTemplateObjectFunctions<T extends TemplateObject> = Omit<NonFunctionProperties<T>, "createdAt" | "updatedAt">;
+export type NonTemplateObjectFunctions<T extends TemplateObject> = Omit<
+    NonFunctionProperties<T>,
+    "createdAt" | "updatedAt"
+>;
 
 export default abstract class TemplateObject implements TemplateObjectRaw {
     public _id?: ObjectId;
@@ -15,8 +18,9 @@ export default abstract class TemplateObject implements TemplateObjectRaw {
     private _updatedAt?: Date;
 
     constructor(obj: NonFunctionProperties<TemplateObjectRaw>) {
-        if (obj._id)
+        if (obj._id) {
             this._id = toObjectId(obj._id);
+        }
         this._createdAt = obj.createdAt;
         this._updatedAt = obj.updatedAt;
 
@@ -32,12 +36,15 @@ export default abstract class TemplateObject implements TemplateObjectRaw {
     }
 
     private _objectValidation() {
-        if (this._id && !isObjectId(this._id))
+        if (this._id && !isObjectId(this._id)) {
             throw new Error("Invalid id");
-        if (this._createdAt && (!(this._createdAt instanceof Date) || this._createdAt.getTime() > Date.now()))
+        }
+        if (this._createdAt && (!(this._createdAt instanceof Date) || this._createdAt.getTime() > Date.now())) {
             throw new Error("Invalid createdAt");
-        if (this._updatedAt && (!(this._updatedAt instanceof Date) || this._updatedAt.getTime() > Date.now()))
+        }
+        if (this._updatedAt && (!(this._updatedAt instanceof Date) || this._updatedAt.getTime() > Date.now())) {
             throw new Error("Invalid updatedAt");
+        }
     }
 
     protected abstract _validation(): void | never;

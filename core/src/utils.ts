@@ -10,8 +10,9 @@ export type ObjectId = mongoose.Types.ObjectId;
 // export const ObjectId = mongoose.Types.ObjectId;
 
 export function toObjectId(id: ObjectId | string) {
-    if (typeof id === "string")
+    if (typeof id === "string") {
         return new mongoose.Types.ObjectId(id);
+    }
     return id;
 }
 

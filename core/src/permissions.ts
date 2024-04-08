@@ -1,4 +1,2 @@
-export const PERMISSIONS = [
-    "TEST:READ"
-];
-export type Permissions = typeof PERMISSIONS[number];
+export const PERMISSIONS = ["TEST:READ"];
+export type Permissions = (typeof PERMISSIONS)[number];
