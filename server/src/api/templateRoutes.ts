@@ -5,6 +5,8 @@ import { RouteParameters } from "express-serve-static-core";
 import mongoose from "mongoose";
 import { env } from "process";
 
+export type RouteMethod = "get" | "post" | "put" | "delete";
+
 export default class TemplateRoutes {
     protected readonly _clientUrl: string;
 
@@ -25,7 +27,7 @@ export default class TemplateRoutes {
         );
     }
 
-    protected _route<ReqBody = unknown, ResBody = unknown, P = RouteParameters<string>>(method: "get" | "post" | "put" | "delete", route: string, permissions: Array<Permissions> | undefined, ...handlers: Array<RequestHandler<P, ResBody, ReqBody>>) {
+    protected _route<ReqBody = unknown, ResBody = unknown, P = RouteParameters<string>>(method: RouteMethod, route: string, permissions: Array<Permissions> | undefined, ...handlers: Array<RequestHandler<P, ResBody, ReqBody>>) {
         return this._app[method](route, handlers
             .map((handler) => (req: Request<P, ResBody, ReqBody>, res: Response<ResBody>, next: NextFunction) =>
                 this._wrapper<P, ResBody, ReqBody>(permissions, req, res, next, handler)
