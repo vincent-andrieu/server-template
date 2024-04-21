@@ -44,7 +44,7 @@ export default class AuthentificationMiddleware {
         }
         return this._whitelistRoutes.some(
             ({ route, methods }) =>
-                (!methods || methods?.includes(request.method.toUpperCase() as RouteMethod)) &&
+                (!methods || methods?.includes(request.method.toLowerCase() as RouteMethod)) &&
                 request.originalUrl.startsWith(route)
         );
     }
