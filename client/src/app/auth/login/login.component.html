@@ -1,0 +1,9 @@
+<div class="flex h-full justify-center items-center gap-8">
+    <button *ngFor="let provider of authProviders" mat-raised-button color="primary"
+            (click)="authService.login(provider.name)">
+        <div class="flex flex-row items-center space-x-2">
+            <img [height]="provider.height" [width]="provider.width" [src]="provider.icon">
+            <span class="text-base whitespace-nowrap ml-10">{{ provider.label }}</span>
+        </div>
+    </button>
+</div>
